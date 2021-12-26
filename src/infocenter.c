@@ -116,9 +116,11 @@ static int update_storage_from_script(const char *script,
      * be malformatted and the results are not reliable.
      */
     const char *stopped_at = tokenize_and_store(out, '\n', stores, store_len);
-    free((void *)out);
 
-    return *stopped_at == 0 ? SUCCESS : FAILURE;
+    //stopped_at 指向的内存地址在 out 的空间内，我们应该在释放 out 之前进行判断
+    int ret = (*stopped_at == 0) ? SUCCESS : FAILURE;
+    free((void *)out);
+    return ret;
 }
 
 BASIC_INFO g_basic_info;
